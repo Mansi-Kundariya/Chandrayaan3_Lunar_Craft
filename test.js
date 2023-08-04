@@ -1,104 +1,46 @@
-const ps = require('prompt-sync');
-const prompt = ps();
+import Spacecraft from './main';
 
-class Spacecraft {
-    constructor(x, y, z, initialDirection) {
-        this.x = x;
-        this.y = y;
-        this.z = z;
-        this.direction = initialDirection;
-    }
+describe('Spacecraft', () => {
+  it('should move forward correctly', () => {
+    const spacecraft = new Spacecraft(0, 0, 0, 'N');
+    spacecraft.CommandsForMoveAndForword(['f']);
+    expect(spacecraft.getPosition()).toEqual({ x: 0, y: 1, z: 0 });
+  });
 
-    moveForward() {
-        switch (this.direction) {
-            case 'N': this.y++; break;
-            case 'S': this.y--; break;
-            case 'E': this.x++; break;
-            case 'W': this.x--; break;
-            case 'Up': this.z++; break;
-            case 'Down': this.z--; break;
-        }
-    }
+  it('should move backward correctly', () => {
+    const spacecraft = new Spacecraft(0, 0, 0, 'N');
+    spacecraft.CommandsForMoveAndForword(['b']);
+    expect(spacecraft.getPosition()).toEqual({ x: 0, y: -1, z: 0 });
+  });
 
-    moveBackward() {
-        switch (this.direction) {
-            case 'N': this.y--; break;
-            case 'S': this.y++; break;
-            case 'E': this.x--; break;
-            case 'W': this.x++; break;
-            case 'Up': this.z--; break;
-            case 'Down': this.z++; break;
-        }
-    }
+  it('should turn left correctly', () => {
+    const spacecraft = new Spacecraft(0, 0, 0, 'N');
+    spacecraft.CommandsForMoveAndForword(['l']);
+    expect(spacecraft.getDirection()).toBe('W');
+  });
 
-    turnLeft() {
-        switch (this.direction) {
-            case 'N': this.direction = 'W'; break;
-            case 'S': this.direction = 'E'; break;
-            case 'E': this.direction = 'N'; break;
-            case 'W': this.direction = 'S'; break;
-            case 'Up': this.direction = 'W'; break; 
-            case 'Down': this.direction = 'E'; break; 
-        }
-    }
+  it('should turn right correctly', () => {
+    const spacecraft = new Spacecraft(0, 0, 0, 'N');
+    spacecraft.CommandsForMoveAndForword(['r']);
+    expect(spacecraft.getDirection()).toBe('E');
+  });
 
-    turnRight() {
-        switch (this.direction) {
-            case 'N': this.direction = 'E'; break;
-            case 'S': this.direction = 'W'; break;
-            case 'E': this.direction = 'S'; break;
-            case 'W': this.direction = 'N'; break;
-            case 'Up': this.direction = 'W'; break; 
-            case 'Down': this.direction = 'E'; break;
-        }
-    }
+  it('should turn up correctly', () => {
+    const spacecraft = new Spacecraft(0, 0, 0, 'N');
+    spacecraft.CommandsForMoveAndForword(['u']);
+    expect(spacecraft.getDirection()).toBe('Up');
+  });
 
-    turnUp() {
-        switch (this.direction) {
-            case 'N': this.direction = 'Up'; break;
-            case 'S': this.direction = 'Down'; break;
-            case 'E': this.direction = 'Up'; break;
-            case 'W': this.direction = 'Down'; break;
-            case 'Up': break; 
-            case 'Down': break; 
-        }
-    }
+  it('should turn down correctly', () => {
+    const spacecraft = new Spacecraft(0, 0, 0, 'N');
+    spacecraft.CommandsForMoveAndForword(['d']);
+    expect(spacecraft.getDirection()).toBe('Down');
+  });
 
-    turnDown() {
-        switch (this.direction) {
-            case 'N': this.direction = 'Down'; break;
-            case 'S': this.direction = 'Up'; break;
-            case 'Up': break;
-            case 'Down': break;
-        }
-    }
-
-    CommandsForMoveAndForword(commands) {
-        for (let command of commands) {
-            switch (command) {
-                case 'f': this.moveForward(); break;
-                case 'b': this.moveBackward(); break;
-                case 'l': this.turnLeft(); break;
-                case 'r': this.turnRight(); break;
-                case 'u': this.turnUp(); break;
-                case 'd': this.turnDown(); break;
-                default: console.error("Invalid command: " + command);
-            }
-        }
-    }
-
-    printPositionAndDirection() {
-        console.log(`Final Position: (${this.x}, ${this.y}, ${this.z})`);
-        console.log(`Final Direction: ${this.direction}`);
-    }
-}
-
-let initialDirection=prompt("Enter the initial Direction:");
-const spacecraft = new Spacecraft(0, 0, 0, initialDirection);
-
-const userInput = prompt('Enter commands separated by commas: ');
-const commands = userInput.split(',').map(element => element.trim());
-  
-spacecraft.CommandsForMoveAndForword(commands);
-spacecraft.printPositionAndDirection();
-
+  it('should handle multiple commands correctly', () => {
+    const spacecraft = new Spacecraft(0, 0, 0, 'N');
+    spacecraft.CommandsForMoveAndForword(['f', 'r', 'u', 'b', 'l']);
+    expect(spacecraft.getPosition()).toEqual({ x: 0, y: 1, z: -1 });
+    expect(spacecraft.getDirection()).toBe('W');
+  });
+});
